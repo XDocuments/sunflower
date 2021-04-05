@@ -24,29 +24,31 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.HomeViewPagerFragmentDirections
-import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.ListItemPlantBinding
 
 /**
- * Adapter for the [RecyclerView] in [PlantListFragment].
+ * 植物列表页面RecyclerView适配器
  */
 class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallback()) {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //将植物列表数据和PlantViewHolder进行绑定
         val plant = getItem(position)
         (holder as PlantViewHolder).bind(plant)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        //列表ListItem绑定布局使用ListItemPlantBinding.inflate
         return PlantViewHolder(ListItemPlantBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false))
+                LayoutInflater.from(parent.context), parent, false))
     }
 
     class PlantViewHolder(
-        private val binding: ListItemPlantBinding
+            private val binding: ListItemPlantBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
+            //将监听事件绑定到布局当中
             binding.setClickListener {
                 binding.plant?.let { plant ->
                     navigateToPlant(plant, it)
@@ -55,17 +57,19 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
         }
 
         private fun navigateToPlant(
-            plant: Plant,
-            it: View
+                plant: Plant,
+                it: View
         ) {
+            //使用导航组件跳转植物详情页面
             val direction =
-                HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
-                    plant.plantId
-                )
+                    HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
+                            plant.plantId
+                    )
             it.findNavController().navigate(direction)
         }
 
         fun bind(item: Plant) {
+            //将plant数据绑定到布局当中
             binding.apply {
                 plant = item
                 executePendingBindings()

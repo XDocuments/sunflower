@@ -25,13 +25,18 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantRepository
 
 /**
- * The ViewModel for [PlantListFragment].
+ * 植物类表页面ViewModel
+ * 继承ViewModel对象，plantRepository成员变量传入
  */
 class PlantListViewModel internal constructor(plantRepository: PlantRepository) : ViewModel() {
 
+    //声明种植区域LiveData
     private val growZoneNumber = MutableLiveData<Int>(NO_GROW_ZONE)
 
+    //声明植物列表LiveData，感知生命周期可观察数据
     val plants: LiveData<List<Plant>> = growZoneNumber.switchMap {
+        //growZoneNumber LivaDatab变化，通过switchMap转换
+        //根据不同的种植区域，请求plantRepository获取不同的植物，返回LiveData<List<Plant>>类型
         if (it == NO_GROW_ZONE) {
             plantRepository.getPlants()
         } else {
@@ -40,6 +45,7 @@ class PlantListViewModel internal constructor(plantRepository: PlantRepository) 
     }
 
     fun setGrowZoneNumber(num: Int) {
+        //更新区域数据，关联植物列表数据获取更新
         growZoneNumber.value = num
     }
 

@@ -21,9 +21,13 @@ import androidx.lifecycle.ViewModel
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 
+/**
+ * 继承ViewModel，GardenPlantingRepository作为成员
+ */
 class GardenPlantingListViewModel internal constructor(
-    gardenPlantingRepository: GardenPlantingRepository
+        gardenPlantingRepository: GardenPlantingRepository
 ) : ViewModel() {
+    //我的植物列表 LiveData，初始化的时候调用gardenPlantingRepository获取数据
     val plantAndGardenPlantings: LiveData<List<PlantAndGardenPlantings>> =
             gardenPlantingRepository.getPlantedGardens()
 }

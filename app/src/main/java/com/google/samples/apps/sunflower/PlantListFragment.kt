@@ -31,8 +31,12 @@ import com.google.samples.apps.sunflower.databinding.FragmentPlantListBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
 
+/**
+ * 植物列表Fragment
+ */
 class PlantListFragment : Fragment() {
 
+    //获取PlantListViewModel对象
     private val viewModel: PlantListViewModel by viewModels {
         InjectorUtils.providePlantListViewModelFactory(requireContext())
     }
@@ -42,11 +46,15 @@ class PlantListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //Fragment绑定布局
         val binding = FragmentPlantListBinding.inflate(inflater, container, false)
         context ?: return binding.root
 
+        //为植物列表设置适配器
         val adapter = PlantAdapter()
         binding.plantList.adapter = adapter
+
+        //观察植物列表数据
         subscribeUi(adapter)
 
         setHasOptionsMenu(true)
@@ -60,6 +68,7 @@ class PlantListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.filter_zone -> {
+                //点击区域过滤，调用viewModel更新区域数据
                 updateData()
                 true
             }
@@ -68,6 +77,7 @@ class PlantListFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: PlantAdapter) {
+        //观察ViewModel植物列表数据，如果有变化更新列表适配器
         viewModel.plants.observe(viewLifecycleOwner) { plants ->
             adapter.submitList(plants)
         }

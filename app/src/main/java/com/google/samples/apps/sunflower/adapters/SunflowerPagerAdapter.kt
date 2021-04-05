@@ -26,9 +26,7 @@ const val PLANT_LIST_PAGE_INDEX = 1
 
 class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    /**
-     * Mapping of the ViewPager page indexes to their respective Fragments
-     */
+    //根据不同的索引创建不同的Fragment
     private val tabFragmentsCreators: Map<Int, () -> Fragment> = mapOf(
         MY_GARDEN_PAGE_INDEX to { GardenFragment() },
         PLANT_LIST_PAGE_INDEX to { PlantListFragment() }

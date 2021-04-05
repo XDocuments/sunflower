@@ -21,10 +21,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 
+/**
+ * 我的花园Activity，项目整体入口Activity，通过Navigation组件路由Fragment
+ */
 class GardenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //Activity使用setContentView绑定布局
         setContentView<ActivityGardenBinding>(this, R.layout.activity_garden)
     }
 }

@@ -38,24 +38,27 @@ import androidx.navigation.findNavController
 import androidx.core.widget.NestedScrollView
 
 /**
- * A fragment representing a single Plant detail screen.
+ * 植物详情页
  */
 class PlantDetailFragment : Fragment() {
 
     private val args: PlantDetailFragmentArgs by navArgs()
 
+    //创建植物详情ViewModel
     private val plantDetailViewModel: PlantDetailViewModel by viewModels {
         InjectorUtils.providePlantDetailViewModelFactory(requireActivity(), args.plantId)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
+        //DataBindingUtil.inflate绑定布局
         val binding = DataBindingUtil.inflate<FragmentPlantDetailBinding>(
-            inflater, R.layout.fragment_plant_detail, container, false
+                inflater, R.layout.fragment_plant_detail, container, false
         ).apply {
+            //绑定plantDetailViewModel，viewLifecycleOwner和callback对象
             viewModel = plantDetailViewModel
             lifecycleOwner = viewLifecycleOwner
             callback = object : Callback {
@@ -64,39 +67,42 @@ class PlantDetailFragment : Fragment() {
                         hideAppBarFab(fab)
                         plantDetailViewModel.addPlantToGarden()
                         Snackbar.make(root, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG)
-                            .show()
+                                .show()
                     }
                 }
             }
 
             var isToolbarShown = false
 
+            //设置滑动布局的滑动监听
             // scroll change listener begins at Y = 0 when image is fully collapsed
             plantDetailScrollview.setOnScrollChangeListener(
-                NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                    NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
 
-                    // User scrolled past image to height of toolbar and the title text is
-                    // underneath the toolbar, so the toolbar should be shown.
-                    val shouldShowToolbar = scrollY > toolbar.height
+                        // User scrolled past image to height of toolbar and the title text is
+                        // underneath the toolbar, so the toolbar should be shown.
+                        val shouldShowToolbar = scrollY > toolbar.height
 
-                    // The new state of the toolbar differs from the previous state; update
-                    // appbar and toolbar attributes.
-                    if (isToolbarShown != shouldShowToolbar) {
-                        isToolbarShown = shouldShowToolbar
+                        // The new state of the toolbar differs from the previous state; update
+                        // appbar and toolbar attributes.
+                        if (isToolbarShown != shouldShowToolbar) {
+                            isToolbarShown = shouldShowToolbar
 
-                        // Use shadow animator to add elevation if toolbar is shown
-                        appbar.isActivated = shouldShowToolbar
+                            // Use shadow animator to add elevation if toolbar is shown
+                            appbar.isActivated = shouldShowToolbar
 
-                        // Show the plant name if toolbar is shown
-                        toolbarLayout.isTitleEnabled = shouldShowToolbar
+                            // Show the plant name if toolbar is shown
+                            toolbarLayout.isTitleEnabled = shouldShowToolbar
+                        }
                     }
-                }
             )
 
+            //设置Toolbar的监听
             toolbar.setNavigationOnClickListener { view ->
                 view.findNavController().navigateUp()
             }
 
+            //设置toolbarc菜单的监听
             toolbar.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_share -> {
@@ -124,21 +130,21 @@ class PlantDetailFragment : Fragment() {
             }
         }
         val shareIntent = ShareCompat.IntentBuilder.from(activity)
-            .setText(shareText)
-            .setType("text/plain")
-            .createChooserIntent()
-            .apply {
-                // https://android-developers.googleblog.com/2012/02/share-with-intents.html
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    // If we're on Lollipop, we can open the intent as a document
-                    addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-                    )
-                } else {
-                    // Else, we will use the old CLEAR_WHEN_TASK_RESET flag
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                .setText(shareText)
+                .setType("text/plain")
+                .createChooserIntent()
+                .apply {
+                    // https://android-developers.googleblog.com/2012/02/share-with-intents.html
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // If we're on Lollipop, we can open the intent as a document
+                        addFlags(
+                                Intent.FLAG_ACTIVITY_NEW_DOCUMENT or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                        )
+                    } else {
+                        // Else, we will use the old CLEAR_WHEN_TASK_RESET flag
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                    }
                 }
-            }
         startActivity(shareIntent)
     }
 
